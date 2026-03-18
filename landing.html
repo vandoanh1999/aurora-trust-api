@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aurora Trust — AI Compliance API</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0a0f1a; --surface: #111827; --border: #1e293b;
+    --cyan: #06b6d4; --blue: #3b82f6; --green: #10b981;
+    --text: #e2e8f0; --muted: #64748b;
+  }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; line-height: 1.6; }
+  a { color: var(--cyan); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* NAV */
+  nav { display: flex; justify-content: space-between; align-items: center; padding: 1.2rem 2rem; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: rgba(10,15,26,0.95); backdrop-filter: blur(8px); z-index: 100; }
+  .logo { font-size: 1.2rem; font-weight: 700; background: linear-gradient(90deg, var(--cyan), var(--blue)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .nav-links { display: flex; gap: 1.5rem; font-size: 0.9rem; color: var(--muted); }
+  .nav-links a { color: var(--muted); }
+  .nav-links a:hover { color: var(--text); text-decoration: none; }
+  .cta-btn { background: linear-gradient(135deg, var(--cyan), var(--blue)); color: #fff; padding: 0.5rem 1.2rem; border-radius: 6px; font-weight: 600; font-size: 0.9rem; }
+  .cta-btn:hover { opacity: 0.9; text-decoration: none; }
+
+  /* HERO */
+  .hero { text-align: center; padding: 5rem 2rem 4rem; max-width: 860px; margin: 0 auto; }
+  .badge { display: inline-block; padding: 0.3rem 0.9rem; border: 1px solid var(--cyan); color: var(--cyan); border-radius: 99px; font-size: 0.78rem; letter-spacing: 0.05em; margin-bottom: 1.5rem; }
+  h1 { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 800; line-height: 1.15; margin-bottom: 1.2rem; }
+  h1 span { background: linear-gradient(90deg, var(--cyan), var(--blue)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .hero-sub { font-size: 1.15rem; color: var(--muted); max-width: 600px; margin: 0 auto 2.5rem; }
+  .hero-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+  .btn-primary { background: linear-gradient(135deg, var(--cyan), var(--blue)); color: #fff; padding: 0.8rem 2rem; border-radius: 8px; font-weight: 600; font-size: 1rem; }
+  .btn-secondary { border: 1px solid var(--border); color: var(--text); padding: 0.8rem 2rem; border-radius: 8px; font-size: 1rem; }
+  .btn-primary:hover, .btn-secondary:hover { opacity: 0.85; text-decoration: none; }
+
+  /* LOGOS */
+  .logos { text-align: center; padding: 2rem; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); color: var(--muted); font-size: 0.85rem; }
+  .logos p { margin-bottom: 1rem; }
+  .logo-row { display: flex; justify-content: center; gap: 3rem; flex-wrap: wrap; opacity: 0.45; font-weight: 600; font-size: 0.9rem; letter-spacing: 0.05em; }
+
+  /* FEATURES */
+  .section { padding: 4rem 2rem; max-width: 1100px; margin: 0 auto; }
+  .section-label { text-align: center; color: var(--cyan); font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.5rem; }
+  h2 { text-align: center; font-size: clamp(1.6rem, 3vw, 2.2rem); font-weight: 700; margin-bottom: 0.8rem; }
+  .section-sub { text-align: center; color: var(--muted); max-width: 560px; margin: 0 auto 3rem; }
+  .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.8rem; }
+  .card-icon { font-size: 1.8rem; margin-bottom: 1rem; }
+  .card h3 { font-size: 1.05rem; font-weight: 600; margin-bottom: 0.5rem; }
+  .card p { color: var(--muted); font-size: 0.9rem; }
+
+  /* CODE DEMO */
+  .code-section { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 2rem; max-width: 800px; margin: 0 auto; }
+  pre { overflow-x: auto; font-size: 0.85rem; line-height: 1.7; }
+  .kw { color: #7dd3fc; } .str { color: #86efac; } .comment { color: var(--muted); }
+  .tab-row { display: flex; gap: 0.5rem; margin-bottom: 1.2rem; flex-wrap: wrap; }
+  .tab { padding: 0.3rem 0.8rem; border-radius: 5px; font-size: 0.8rem; cursor: pointer; border: 1px solid var(--border); color: var(--muted); background: none; }
+  .tab.active { background: var(--cyan); color: #000; border-color: var(--cyan); }
+
+  /* PRICING */
+  .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; max-width: 900px; margin: 0 auto; }
+  .price-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 2rem; position: relative; }
+  .price-card.featured { border-color: var(--cyan); }
+  .featured-tag { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--cyan); color: #000; font-size: 0.75rem; font-weight: 700; padding: 0.2rem 0.8rem; border-radius: 99px; white-space: nowrap; }
+  .plan-name { font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.5rem; }
+  .price-amount { font-size: 2.5rem; font-weight: 800; margin-bottom: 0.2rem; }
+  .price-period { color: var(--muted); font-size: 0.85rem; margin-bottom: 1.5rem; }
+  .features-list { list-style: none; margin-bottom: 1.8rem; }
+  .features-list li { padding: 0.4rem 0; font-size: 0.9rem; color: var(--muted); }
+  .features-list li::before { content: "✓ "; color: var(--green); }
+  .plan-btn { display: block; text-align: center; width: 100%; padding: 0.75rem; border-radius: 8px; font-weight: 600; font-size: 0.95rem; border: 1px solid var(--border); color: var(--text); }
+  .plan-btn.primary { background: linear-gradient(135deg, var(--cyan), var(--blue)); border: none; color: #fff; }
+  .plan-btn:hover { opacity: 0.85; text-decoration: none; }
+
+  /* COMPLIANCE */
+  .compliance-row { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; margin-top: 2rem; }
+  .compliance-badge { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 0.6rem 1.2rem; font-size: 0.85rem; color: var(--muted); }
+
+  /* FOOTER */
+  footer { border-top: 1px solid var(--border); padding: 2rem; text-align: center; color: var(--muted); font-size: 0.85rem; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">Aurora Trust</div>
+  <div class="nav-links">
+    <a href="#features">Features</a>
+    <a href="#pricing">Pricing</a>
+    <a href="/docs">API Docs</a>
+  </div>
+  <a href="/register" class="cta-btn">Get API Key →</a>
+</nav>
+
+<section class="hero">
+  <div class="badge">EU AI Act Compliance Infrastructure</div>
+  <h1>AI Compliance API for<br><span>Fintech & Healthcare</span></h1>
+  <p class="hero-sub">Issue Verifiable Credentials for AI agents, maintain immutable audit trails, and enable multi-party authorization — all in one API. Built for EU AI Act Articles 9, 12 & 13.</p>
+  <div class="hero-btns">
+    <a href="/register" class="btn-primary">Start Free — No Credit Card</a>
+    <a href="/docs" class="btn-secondary">View API Docs</a>
+  </div>
+</section>
+
+<div class="logos">
+  <p>Trusted by teams building compliant AI systems</p>
+  <div class="logo-row">
+    <span>FINTECH</span><span>HEALTHCARE AI</span><span>INSURTECH</span><span>LEGALTECH</span><span>GOVTECH</span>
+  </div>
+</div>
+
+<section class="section" id="features">
+  <div class="section-label">Core Capabilities</div>
+  <h2>Everything AI Compliance Requires</h2>
+  <p class="section-sub">Three endpoints cover 80% of EU AI Act documentation requirements for high-risk AI systems.</p>
+  <div class="grid-3">
+    <div class="card">
+      <div class="card-icon">🪪</div>
+      <h3>Verifiable Credentials</h3>
+      <p>Issue cryptographically signed credentials for any AI model, agent, or dataset. Verifiable offline. Chain-of-custody for model deployments.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">📋</div>
+      <h3>Immutable Audit Trail</h3>
+      <p>Log every AI decision with timestamp, outcome, and metadata. Query by agent ID or time range. Export-ready for regulatory audits.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">⭐</div>
+      <h3>Reputation Engine</h3>
+      <p>Track AI agent performance over time using EMA scoring. Automatic tier assignment: Trusted / Stable / Probation. Feeds back into deployment decisions.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔐</div>
+      <h3>Threshold Signing (MPC)</h3>
+      <p>Require k-of-n human approvers to authorize high-risk AI actions. ECC P-256 + Shamir Secret Sharing. No single point of compromise.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">⚡</div>
+      <h3>Simple REST API</h3>
+      <p>Bearer token auth, JSON in/out, OpenAPI docs. Integrate in under 30 minutes. SDKs for Python and TypeScript available.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🏢</div>
+      <h3>Multi-Tenant</h3>
+      <p>Full tenant isolation. Each customer's credentials, audit logs, and reputation data are completely separate. GDPR data residency options available.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-label">Integration</div>
+  <h2>Three Lines of Code</h2>
+  <p class="section-sub">Start logging AI decisions and issuing credentials immediately.</p>
+  <div class="code-section">
+    <div class="tab-row">
+      <button class="tab active">Python</button>
+      <button class="tab">cURL</button>
+    </div>
+<pre><span class="comment"># 1. Issue a credential for your AI model deployment</span>
+<span class="kw">import</span> requests
+
+headers = {<span class="str">"Authorization"</span>: <span class="str">"Bearer at_your_api_key"</span>}
+
+<span class="comment"># Issue Verifiable Credential</span>
+vc = requests.post(<span class="str">"https://auroratrust.dev/v1/credentials/issue"</span>,
+    json={
+        <span class="str">"subject_id"</span>: <span class="str">"model-gpt4-fraud-detector-v2"</span>,
+        <span class="str">"credential_type"</span>: <span class="str">"AIModelCompliance"</span>,
+        <span class="str">"claims"</span>: {
+            <span class="str">"risk_level"</span>: <span class="str">"high"</span>,
+            <span class="str">"validated_by"</span>: <span class="str">"compliance-team"</span>,
+            <span class="str">"eu_ai_act_category"</span>: <span class="str">"Annex III — Credit Scoring"</span>
+        },
+        <span class="str">"expires_in_days"</span>: 365
+    }, headers=headers).json()
+
+<span class="comment"># 2. Log every AI decision</span>
+requests.post(<span class="str">"https://auroratrust.dev/v1/audit/log"</span>,
+    json={
+        <span class="str">"agent_id"</span>: <span class="str">"model-gpt4-fraud-detector-v2"</span>,
+        <span class="str">"action"</span>: <span class="str">"loan_application_decision"</span>,
+        <span class="str">"outcome"</span>: <span class="str">"success"</span>,
+        <span class="str">"metadata"</span>: {<span class="str">"applicant_id"</span>: <span class="str">"anon-8823"</span>, <span class="str">"decision"</span>: <span class="str">"approved"</span>}
+    }, headers=headers)
+
+<span class="comment"># 3. Get compliance summary for audit report</span>
+summary = requests.get(
+    <span class="str">"https://auroratrust.dev/v1/audit/summary/model-gpt4-fraud-detector-v2"</span>,
+    headers=headers).json()
+<span class="kw">print</span>(summary[<span class="str">"compliance_status"</span>])  <span class="comment"># → "compliant"</span></pre>
+  </div>
+</section>
+
+<section class="section" id="pricing">
+  <div class="section-label">Pricing</div>
+  <h2>Simple, Transparent Pricing</h2>
+  <p class="section-sub">Start free. Pay as your AI systems scale. No hidden fees.</p>
+  <div class="pricing-grid">
+    <div class="price-card">
+      <div class="plan-name">Starter</div>
+      <div class="price-amount">$99</div>
+      <div class="price-period">/ month</div>
+      <ul class="features-list">
+        <li>10,000 API calls / month</li>
+        <li>Verifiable Credentials</li>
+        <li>Audit Trail (90-day retention)</li>
+        <li>Reputation Engine</li>
+        <li>Community support</li>
+      </ul>
+      <a href="/register?plan=starter" class="plan-btn">Get Started</a>
+    </div>
+    <div class="price-card featured">
+      <div class="featured-tag">Most Popular</div>
+      <div class="plan-name">Business</div>
+      <div class="price-amount">$499</div>
+      <div class="price-period">/ month</div>
+      <ul class="features-list">
+        <li>100,000 API calls / month</li>
+        <li>Everything in Starter</li>
+        <li>MPC Threshold Signing</li>
+        <li>Audit Trail (1-year retention)</li>
+        <li>Priority email support</li>
+        <li>Export to CSV / JSON</li>
+      </ul>
+      <a href="/register?plan=business" class="plan-btn primary">Start Business</a>
+    </div>
+    <div class="price-card">
+      <div class="plan-name">Enterprise</div>
+      <div class="price-amount">$1,999</div>
+      <div class="price-period">/ month</div>
+      <ul class="features-list">
+        <li>Unlimited API calls</li>
+        <li>Everything in Business</li>
+        <li>GDPR data residency (EU)</li>
+        <li>Custom retention policies</li>
+        <li>SLA 99.9% uptime</li>
+        <li>Dedicated Slack support</li>
+        <li>Compliance consulting (2hr/mo)</li>
+      </ul>
+      <a href="mailto:sales@auroratrust.dev" class="plan-btn">Contact Sales</a>
+    </div>
+  </div>
+  <div class="compliance-row">
+    <span class="compliance-badge">EU AI Act Art. 9</span>
+    <span class="compliance-badge">EU AI Act Art. 12</span>
+    <span class="compliance-badge">EU AI Act Art. 13</span>
+    <span class="compliance-badge">ISO/IEC 42001</span>
+    <span class="compliance-badge">SOC 2 ready</span>
+  </div>
+</section>
+
+<footer>
+  <p>© 2026 Aurora Trust · <a href="/docs">API Docs</a> · <a href="mailto:hello@auroratrust.dev">hello@auroratrust.dev</a></p>
+</footer>
+
+</body>
+</html>
